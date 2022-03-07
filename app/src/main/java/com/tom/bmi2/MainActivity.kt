@@ -15,6 +15,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.bHelp.setOnClickListener {
+            Log.d("MainActivity", "help clicked ");
+        }
     }
 
     fun bmi(view: View) {
