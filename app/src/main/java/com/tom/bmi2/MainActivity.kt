@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun bmi(view: View) {
-
         var weight = binding.edWeight.text.toString().toFloat()
         var height = binding.edHeight.text.toString().toFloat()
         var bmi = weight/(height*height)
@@ -34,6 +33,7 @@ class MainActivity : AppCompatActivity() {
             .setTitle("Hello")
             .setMessage("Your BMI is $bmi")
             .setPositiveButton("OK", null)
-            .show()
+            //.show()
+        binding.tvBmi.text = "Your BMI is $bmi"
     }
 }
