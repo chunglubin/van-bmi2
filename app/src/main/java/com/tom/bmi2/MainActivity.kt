@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Log.d(TAG, "onCreate: ")
         binding.bHelp.setOnClickListener {
             Log.d("MainActivity", "help clicked ");
         }
@@ -51,25 +52,27 @@ class MainActivity : AppCompatActivity() {
             }
             //.show()
         binding.tvBmi.text = "Your BMI is $bmi"
-        val intent = Intent(this, ResultActivity::class.java)
-        intent.putExtra("BMI", bmi)
+//        val intent = Intent(this, ResultActivity::class.java)
+//        intent.putExtra("BMI", bmi)
 //        startActivity(intent)
 //        startActivityForResult(intent, REQUEST_DISPLAY_BMI)
-        launcher.launch(null)
+        launcher.launch(bmi)
     }
 
-    class NameContract : ActivityResultContract<Unit, String>() {
-        override fun createIntent(context: Context, input: Unit?): Intent {
-            return Intent(context, ResultActivity::class.java)
-        }
-
+    class NameContract : ActivityResultContract<Float, String>() {
         override fun parseResult(resultCode: Int, intent: Intent?): String {
             if (resultCode == RESULT_OK) {
-                val name = intent?.getStringExtra("NAME")
+                val name = intent?.getStringExtra(Extras.NAME)
                 return name!!
             } else {
                 return "No name"
             }
+        }
+
+        override fun createIntent(context: Context, input: Float?): Intent {
+            val intent = Intent(context, ResultActivity::class.java)
+                .putExtra(Extras.BMI, input)
+            return intent
         }
     }
 
@@ -81,4 +84,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart: ")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume: ")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.d(TAG, "onRestart: ")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: ")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: ")
+    }
 }
