@@ -11,8 +11,10 @@ import androidx.appcompat.app.AlertDialog
 import com.tom.bmi2.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
+    val TAG = MainActivity::class.java.simpleName
+    val REQUEST_DISPLAY_BMI = 16
     lateinit var binding: ActivityMainBinding
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -45,6 +47,15 @@ class MainActivity : AppCompatActivity() {
         binding.tvBmi.text = "Your BMI is $bmi"
         val intent = Intent(this, ResultActivity::class.java)
         intent.putExtra("BMI", bmi)
-        startActivity(intent)
+//        startActivity(intent)
+        startActivityForResult(intent, REQUEST_DISPLAY_BMI)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(TAG, ": onActivityResult");
+        if (requestCode == REQUEST_DISPLAY_BMI && resultCode == RESULT_OK) {
+            Log.d(TAG, "back from ResultActivity");
+        }
     }
 }
