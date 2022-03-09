@@ -1,12 +1,15 @@
 package com.tom.bmi2
 
-import android.content.DialogInterface
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.tom.bmi2.databinding.ActivityMainBinding
 
@@ -14,7 +17,10 @@ class MainActivity : AppCompatActivity() {
     val TAG = MainActivity::class.java.simpleName
     val REQUEST_DISPLAY_BMI = 16
     lateinit var binding: ActivityMainBinding
-    
+    var launcher = registerForActivityResult(NameContract()){ name ->
+        Log.d(TAG, ": $name");
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -48,7 +54,23 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, ResultActivity::class.java)
         intent.putExtra("BMI", bmi)
 //        startActivity(intent)
-        startActivityForResult(intent, REQUEST_DISPLAY_BMI)
+//        startActivityForResult(intent, REQUEST_DISPLAY_BMI)
+        launcher.launch(null)
+    }
+
+    class NameContract : ActivityResultContract<Unit, String>() {
+        override fun createIntent(context: Context, input: Unit?): Intent {
+            return Intent(context, ResultActivity::class.java)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): String {
+            if (resultCode == RESULT_OK) {
+                val name = intent?.getStringExtra("NAME")
+                return name!!
+            } else {
+                return "No name"
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -58,4 +80,5 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "back from ResultActivity");
         }
     }
+
 }
