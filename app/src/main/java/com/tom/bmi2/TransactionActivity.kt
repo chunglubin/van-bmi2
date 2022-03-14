@@ -2,6 +2,7 @@ package com.tom.bmi2
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONObject
@@ -15,8 +16,16 @@ class TransactionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_transaction)
         thread {
             val json = URL("https://atm201605.appspot.com/h").readText()
-//            val gson = Gson()
-            val transactions = mutableListOf<Transaction>()
+            val gson = Gson()
+            val transactions = gson.fromJson(json, Array<Transaction>::class.java).toList()
+            transactions.forEach {
+                println(it)
+            }
+            runOnUiThread {
+                Toast.makeText(this, "Testing", Toast.LENGTH_LONG).show()
+            }
+
+        /*val transactions = mutableListOf<Transaction>()
             val array = JSONArray(json)
             for (i in 0 until array.length()) {
                 val obj: JSONObject= array.getJSONObject(i)
@@ -26,9 +35,11 @@ class TransactionActivity : AppCompatActivity() {
                 val type = obj.getInt("type")
                 val tran = Transaction(account, date, amount, type)
                 transactions.add(tran)
-            }
+            }*/
 
         }
     }
 }
-class Transaction(val account: String, val date: String, val amount:Int, val type:Int)
+data class Transaction(val account: String, val date: String, val amount:Int, val type:Int) {
+
+}
