@@ -11,12 +11,15 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tom.bmi2.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     val TAG = MainActivity::class.java.simpleName
     val REQUEST_DISPLAY_BMI = 16
     lateinit var binding: ActivityMainBinding
+    lateinit var viewModel: BmiViewModel
     var launcher = registerForActivityResult(NameContract()){ name ->
         Log.d(TAG, ": $name");
     }
@@ -26,6 +29,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d(TAG, "onCreate: ")
+        viewModel = ViewModelProvider(this).get(BmiViewModel::class.java)
+        viewModel.bmi.observe(this)  { bmi ->
+            binding.tvBmi.setText(bmi.toString())
+        }
         binding.bHelp.setOnClickListener {
             Log.d("MainActivity", "help clicked ");
         }
@@ -34,29 +41,7 @@ class MainActivity : AppCompatActivity() {
     fun bmi(view: View) {
         var weight = binding.edWeight.text.toString().toFloat()
         var height = binding.edHeight.text.toString().toFloat()
-        var bmi = weight/(height*height)
-        Log.d("MainActivity", bmi.toString())
-        Toast.makeText(this, "Your BMI $bmi", Toast.LENGTH_LONG).show()
-        /*val builder = AlertDialog.Builder(this)
-        builder.setTitle("Hello")
-        builder.setMessage("Your BMI is $bmi")
-        builder.setPositiveButton("OK", null)
-        val dialog = builder.create()
-        dialog.show()*/
-        AlertDialog.Builder(this)
-            .setTitle("Hello")
-            .setMessage("Your BMI is $bmi")
-            .setPositiveButton("OK") { dialog, which ->
-                binding.edWeight.setText("")
-                binding.edHeight.setText("")
-            }
-            //.show()
-        binding.tvBmi.text = "Your BMI is $bmi"
-//        val intent = Intent(this, ResultActivity::class.java)
-//        intent.putExtra("BMI", bmi)
-//        startActivity(intent)
-//        startActivityForResult(intent, REQUEST_DISPLAY_BMI)
-        launcher.launch(bmi)
+        viewModel.set(weight, height)
     }
 
     class NameContract : ActivityResultContract<Float, String>() {

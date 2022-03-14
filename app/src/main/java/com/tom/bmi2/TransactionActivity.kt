@@ -47,11 +47,8 @@ class TransactionActivity : AppCompatActivity() {
                     override fun getItemCount(): Int {
                         return transactions.size
                     }
-
                 }
             }
-
-
         }
     }
 
