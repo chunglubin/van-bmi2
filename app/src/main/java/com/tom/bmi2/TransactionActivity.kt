@@ -2,6 +2,7 @@ package com.tom.bmi2
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,8 +30,28 @@ class TransactionActivity : AppCompatActivity() {
             transactions.forEach {
                 println(it)
             }
-//            binding.recycler.adapter = ??
-            
+            runOnUiThread {
+                binding.recycler.adapter = object : RecyclerView.Adapter<TranViewHolder>() {
+                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TranViewHolder {
+                        val binding = RowTransactionBinding.inflate(layoutInflater, parent, false)
+                        return TranViewHolder(binding)
+                    }
+
+                    override fun onBindViewHolder(holder: TranViewHolder, position: Int) {
+                        val tran = transactions.get(position)
+                        holder.amount.setText(tran.amount.toString())
+                        holder.date.setText(tran.date)
+                        holder.type.setText(tran.type.toString())
+                    }
+
+                    override fun getItemCount(): Int {
+                        return transactions.size
+                    }
+
+                }
+            }
+
+
         }
     }
 
